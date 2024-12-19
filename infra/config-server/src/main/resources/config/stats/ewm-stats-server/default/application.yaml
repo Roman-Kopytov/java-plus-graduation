@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:9876/ewm-stats
+    username: root
+    password: root
+    driverClassName: org.postgresql.Driver
+
+  sql:
+    init:
+      mode: always
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: INFO
+          JpaTransactionManager: INFO
+        transaction:
+          interceptor: INFO
