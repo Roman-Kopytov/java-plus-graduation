@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:9876/ewm-stats
+    url: jdbc:postgresql://localhost:5432/ewm-stats
     username: root
     password: root
     driverClassName: org.postgresql.Driver
