@@ -11,7 +11,7 @@ public interface EventClient {
     @GetMapping("/feign/events/{eventId}")
     EventRequestDto getEventById(@PathVariable long eventId);
 
-    @GetMapping("/feign/events/{eventId}/initiator{userId}")
+    @GetMapping("/feign/events/{eventId}/initiator/{userId}")
     EventRequestDto getEventByIdAndInitiator(@PathVariable long eventId,
                                              @PathVariable long userId);
 

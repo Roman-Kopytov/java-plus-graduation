@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,7 +52,7 @@ public class RequestServiceImpl implements RequestService {
         UserShortDto requester = getUser(userId);
         EventRequestDto event = getEvent(evenId);
 
-        if (event.getInitiator().getId().equals(userId)) {
+        if (event.getInitiatorId() == (userId)) {
             throw new ConflictException("The initiator of the event can't add a request to participate in his event");
         }
         if (!requestRepository.findByEventIdAndRequesterId(evenId, userId).isEmpty()) {
@@ -138,8 +137,12 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public List<EventCountByRequest> getEventIdAndCountRequest(Set<Long> eventIds) {
-        return requestRepository.getEventIdAndCountRequest(eventIds);
+    public List<EventCountByRequest> getEventIdAndCountRequest(List<Long> eventIds) {
+        //TODO знаю что здесь n запросов в бд, но никак не могу победить это. До этого был join и соответвенно все работало.
+        // Скорее всего тут должно быть комбинированые решение с обработкой в бд и последующей в сервисе
+        return eventIds.stream().map(id -> new EventCountByRequest(id, requestRepository.countConfirmedRequest(id))).toList();
+//        List<EventCountByRequest> eventIdAndCountRequest = requestRepository.getEventIdAndCountRequest(eventIds);
+//        return eventIdAndCountRequest;
     }
 
     @Override

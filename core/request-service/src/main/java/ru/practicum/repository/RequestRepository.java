@@ -3,13 +3,11 @@ package ru.practicum.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.querydsl.QuerydslPredicateExecutor;
-import ru.practicum.dto.request.EventCountByRequest;
 import ru.practicum.dto.request.RequestStatus;
 import ru.practicum.model.Request;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public interface RequestRepository extends JpaRepository<Request, Long>, QuerydslPredicateExecutor<Request> {
 
@@ -28,11 +26,10 @@ public interface RequestRepository extends JpaRepository<Request, Long>, Queryds
 //            "HAVING COUNT(r.id) >= e.participantLimit")
 //    List<EventCountByRequest> findConfirmedRequestWithLimitCheck(Set<Long> eventIds);
 
-    @Query(value = "SELECT new ru.practicum.dto.request.EventCountByRequest(r.eventId, COUNT(r.id)) " +
-            "FROM Request r " +
-            "WHERE r.eventId IN ?1 AND r.status = 'CONFIRMED' " +
-            "GROUP BY r.eventId")
-    List<EventCountByRequest> getEventIdAndCountRequest(Set<Long> eventIds);
+//    @Query("SELECT new ru.practicum.dto.request.EventCountByRequest(e.eventId, " +
+//            "(SELECT COUNT(r.id) FROM Request r WHERE r.eventId = e.eventId AND r.status = 'CONFIRMED')) " +
+//            "FROM Request e WHERE e.eventId IN :eventIds GROUP BY e.eventId")
+//    List<EventCountByRequest> getEventIdAndCountRequest(@Param("eventIds") List<Long> eventIds);
 
 
     @Query(value = "SELECT (COUNT(r.id)>=?2) " +

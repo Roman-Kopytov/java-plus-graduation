@@ -60,7 +60,7 @@ public class RatingServiceImpl implements RatingService {
         UserShortDto user = getUser(userId);
         EventRequestDto event = getEvent(eventId);
 
-        if (event.getInitiator().getId().equals(userId)) {
+        if (event.getInitiatorId() == (userId)) {
             throw new ConflictException("The initiator of the event can't add a request to participate in his event");
         }
 

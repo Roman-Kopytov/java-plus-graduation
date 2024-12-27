@@ -1,7 +1,6 @@
 package ru.practicum.feign;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,11 +19,11 @@ public interface StatsClient {
     @PostMapping("/hit")
     EndpointHitDTO saveStats(@RequestBody EndpointHitDTO hitDto);
 
-    @CircuitBreaker(name ="myCircuitBreaker", fallbackMethod = "getDefaultStats")
+    @CircuitBreaker(name = "myCircuitBreaker", fallbackMethod = "getDefaultStats")
     @GetMapping("/stats")
     List<ViewStatsDTO> getStats(@SpringQueryMap StatsParamsEncode params);
 
-    default List<ViewStatsDTO> getDefaultStats() {
+    default List<ViewStatsDTO> getDefaultStats(@SpringQueryMap StatsParamsEncode params, Throwable throwable) {
 
         return List.of();
     }

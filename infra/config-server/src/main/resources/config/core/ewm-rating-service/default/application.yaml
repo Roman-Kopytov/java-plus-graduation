@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/ewm-main
+    url: jdbc:postgresql://localhost:5432/rating
     username: root
     password: root
     driverClassName: org.postgresql.Driver
@@ -8,6 +8,11 @@ spring:
   sql:
     init:
       mode: always
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 
   jpa:
     hibernate:

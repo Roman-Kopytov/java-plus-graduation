@@ -3,7 +3,7 @@ package ru.practicum.feignclient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.dto.user.UserShortDto;
 
 import java.util.List;
@@ -14,5 +14,5 @@ public interface UserClient {
     UserShortDto getUserById(@PathVariable long userId);
 
     @GetMapping("feign/users")
-    List<UserShortDto> getUsersByIds(@RequestBody List<Long> userIds);
+    List<UserShortDto> getUsersByIds(@RequestParam("userIds") List<Long> userIds);
 }

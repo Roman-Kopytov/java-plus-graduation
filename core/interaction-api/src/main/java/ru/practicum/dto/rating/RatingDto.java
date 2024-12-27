@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.dto.event.EventShortDto;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +20,7 @@ public class RatingDto {
 
     private Long userId;
 
-    private EventShortDto event;
+    private Long eventId;
 
     private Boolean isLike;
 }

@@ -30,8 +30,8 @@ public interface EventMapper {
     @Mapping(target = "location", source = "location")
     @Mapping(target = "state", source = "state")
     @Mapping(target = "createdOn", source = "createdOn")
-    Event toEvent(final NewEventDto newEventDto, final Category category, final Location location
-            , final EventState state, LocalDateTime createdOn);
+    Event toEvent(final NewEventDto newEventDto, final Category category, final Location location,
+                  final EventState state, LocalDateTime createdOn);
 
     @Mapping(target = "id", source = "event.id")
     @Mapping(target = "rating", source = "rating")

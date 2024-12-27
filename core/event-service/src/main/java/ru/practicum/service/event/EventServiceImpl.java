@@ -81,7 +81,7 @@ public class EventServiceImpl implements EventService {
         }
         Map<Long, Integer> eventLimitById = events.stream().collect(Collectors.toMap(Event::getId, Event::getParticipantLimit));
         List<EventCountByRequest> eventsIdWithConfirmedRequest =
-                requestClient.getEventIdAndCountRequest(eventLimitById.keySet());
+                requestClient.getEventIdAndCountRequest(List.copyOf(eventLimitById.keySet()));
 
         if (params.getOnlyAvailable()) {
             eventsIdWithConfirmedRequest = eventsIdWithConfirmedRequest.stream()
@@ -165,7 +165,7 @@ public class EventServiceImpl implements EventService {
         if (events.isEmpty()) {
             return Collections.emptyList();
         }
-        Set<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toSet());
+        List<Long> eventIds = events.stream().map(Event::getId).toList();
         List<EventCountByRequest> eventsIdWithConfirmedRequest
                 = requestClient.getEventIdAndCountRequest(eventIds);
 
@@ -192,12 +192,10 @@ public class EventServiceImpl implements EventService {
             initiatorsId.add(event.getInitiatorId());
         }
         List<UserShortDto> allUsersByIds = userClient.getUsersByIds(initiatorsId);
-        Map<Long, UserShortDto> collect = allUsersByIds.stream().collect(Collectors.toMap(UserShortDto::getId, dto -> dto));
+        Map<Long, UserShortDto> dtoMap = allUsersByIds.stream().collect(Collectors.toMap(UserShortDto::getId, dto -> dto));
         return events.stream()
-                .collect(Collectors.toMap(
-                        Event::getId,
-                        event -> collect.get(event.getInitiatorId())
-                ));
+                .collect(Collectors.toMap(Event::getId,
+                        event -> dtoMap.get(event.getInitiatorId())));
     }
 
     //    Приватные пользователи
@@ -213,7 +211,7 @@ public class EventServiceImpl implements EventService {
         PageRequest pageRequest = PageRequest.of(params.getFrom() / params.getSize(), params.getSize());
 
         List<Event> events = eventRepository.findAll(finalCondition, pageRequest).getContent();
-        Set<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toSet());
+        List<Long> eventIds = events.stream().map(Event::getId).toList();
         List<EventCountByRequest> eventsIdWithConfirmedRequest =
                 requestClient.getEventIdAndCountRequest(eventIds);
 
@@ -392,13 +390,16 @@ public class EventServiceImpl implements EventService {
     public EventRequestDto getByIdForRequest(long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id" + eventId));
+//        UserShortDto user = getUser(event.getId());
         return eventMapper.toEventRequestDto(event);
+
     }
 
     @Override
     public EventRequestDto getByIdAndInitiatorId(long eventId, long userId) {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id" + eventId + "for user" + userId));
+//        UserShortDto user = getUser(event.getId());
         return eventMapper.toEventRequestDto(event);
     }
 
