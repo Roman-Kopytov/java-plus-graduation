@@ -97,7 +97,7 @@ public class CompilationServiceImpl implements CompilationService {
                     .findFirst()
                     .orElse(0L);
 
-            finalEvent.setConfirmedRequests(ev.getCount());
+            finalEvent.setConfirmedRequests((Integer) ev.getCount());
             UserShortDto userShortDto = initiatorsByEventId.get(ev.getEventId());
             return eventMapper.toEventShortDto(finalEvent, userShortDto, rating, views);
         }).toList();
@@ -163,7 +163,7 @@ public class CompilationServiceImpl implements CompilationService {
         Iterable<Compilation> compilationsIterable = compilationRepository.findAll(finalCondition, pageRequest);
 
         List<Compilation> compilations = StreamSupport.stream(compilationsIterable.spliterator(), false).toList();
-//TODO
+
         return compilations.stream().map(comp -> compilationMapper.toCompilationDto(comp, getEventShortDtos(comp))).toList();
     }
 

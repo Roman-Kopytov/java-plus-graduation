@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -64,7 +65,7 @@ public class RequestServiceImpl implements RequestService {
         if (!(event.getParticipantLimit() == 0)) {
             checkEventRequestLimit(event);
         }
-        Integer countConfirmedRequest = requestRepository.countConfirmedRequest(evenId);
+        Integer countConfirmedRequest = requestRepository.countRequests(evenId, RequestStatus.CONFIRMED);
         event.setConfirmedRequests(countConfirmedRequest);
 
         Request request = new Request();
@@ -138,16 +139,15 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public List<EventCountByRequest> getEventIdAndCountRequest(List<Long> eventIds) {
-        //TODO знаю что здесь n запросов в бд, но никак не могу победить это. До этого был join и соответвенно все работало.
-        // Скорее всего тут должно быть комбинированые решение с обработкой в бд и последующей в сервисе
-        return eventIds.stream().map(id -> new EventCountByRequest(id, requestRepository.countConfirmedRequest(id))).toList();
-//        List<EventCountByRequest> eventIdAndCountRequest = requestRepository.getEventIdAndCountRequest(eventIds);
-//        return eventIdAndCountRequest;
+        List<EventCountByRequest> eventIdAndCountRequest = requestRepository.getEventIdAndCountRequest(eventIds);
+        Map<Long, Number> eventCountMap = eventIdAndCountRequest.stream()
+                .collect(Collectors.toMap(EventCountByRequest::getEventId, EventCountByRequest::getCount));
+        return eventIds.stream().map(id -> new EventCountByRequest(id, eventCountMap.getOrDefault(id, 0))).toList();
     }
 
     @Override
     public Integer countConfirmedRequest(Long eventId) {
-        return requestRepository.countConfirmedRequest(eventId);
+        return requestRepository.countRequests(eventId, RequestStatus.CONFIRMED);
     }
 
     private void checkEventRequestLimit(EventRequestDto event) {

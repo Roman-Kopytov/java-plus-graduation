@@ -85,7 +85,7 @@ public class EventServiceImpl implements EventService {
 
         if (params.getOnlyAvailable()) {
             eventsIdWithConfirmedRequest = eventsIdWithConfirmedRequest.stream()
-                    .filter(ev -> ev.getCount() >= eventLimitById.get(ev.getEventId()))
+                    .filter(ev -> (Integer) ev.getCount() >= eventLimitById.get(ev.getEventId()))
                     .toList();
         }
 
@@ -349,7 +349,7 @@ public class EventServiceImpl implements EventService {
             savedEvent.setDescription(eventDto.getDescription());
         }
         if (eventDto.getLocation() != null) {
-            Location location = locationRepository.save(locationMapper.toLocation(eventDto.getLocation()));
+            locationRepository.save(locationMapper.toLocation(eventDto.getLocation()));
         }
         if (eventDto.getCategory() != null) {
             Category category = getCategory(eventDto.getCategory());
@@ -390,7 +390,6 @@ public class EventServiceImpl implements EventService {
     public EventRequestDto getByIdForRequest(long eventId) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id" + eventId));
-//        UserShortDto user = getUser(event.getId());
         return eventMapper.toEventRequestDto(event);
 
     }
@@ -399,7 +398,6 @@ public class EventServiceImpl implements EventService {
     public EventRequestDto getByIdAndInitiatorId(long eventId, long userId) {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id" + eventId + "for user" + userId));
-//        UserShortDto user = getUser(event.getId());
         return eventMapper.toEventRequestDto(event);
     }
 
@@ -427,10 +425,10 @@ public class EventServiceImpl implements EventService {
             return ratingClient.countEventRating(event.getId());
         } catch (FeignException e) {
             if (e.status() == 404) {
-                log.warn("User not found");
+                log.warn("Event not found");
                 throw e;
             } else {
-                log.warn("Feign error: " + e.status(), e);
+                log.warn("Feign error: {}", e.status(), e);
                 throw e;
             }
         }
@@ -455,7 +453,7 @@ public class EventServiceImpl implements EventService {
                 .map(ViewStatsDTO::getHits)
                 .findFirst()
                 .orElse(0L);
-        finalEvent.setConfirmedRequests(Math.toIntExact(ev.getCount()));
+        finalEvent.setConfirmedRequests((Integer) ev.getCount());
         return views;
     }
 

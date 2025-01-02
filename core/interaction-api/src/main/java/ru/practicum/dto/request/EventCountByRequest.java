@@ -9,5 +9,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class EventCountByRequest {
     Long eventId;
-    Integer count;
+    Number count;
+
+//    public EventCountByRequest(Long eventId, Long count) {
+//        this.eventId = eventId;
+//        this.count = count;
+//    }
+
 }

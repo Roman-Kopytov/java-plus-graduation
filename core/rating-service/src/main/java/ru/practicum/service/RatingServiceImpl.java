@@ -138,7 +138,7 @@ public class RatingServiceImpl implements RatingService {
             return eventClient.getEventById(eventId);
         } catch (FeignException e) {
             if (e.status() == 404) {
-                log.warn("User not found");
+                log.warn("Event not found");
             } else {
                 log.warn("Feign error: " + e.status(), e);
             }
