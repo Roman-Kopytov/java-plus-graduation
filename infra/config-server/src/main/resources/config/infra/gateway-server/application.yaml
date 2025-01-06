@@ -3,18 +3,44 @@ spring:
     gateway:
       discovery.locator.enabled: true
       routes:
-        - id: ewm_main_service_route
-          uri: lb://ewm-main-service
+        - id: ewm_user_service_route_users
+          uri: lb://ewm-user-service
+          predicates:
+            - Path=/users ,/admin/users,/admin/users/{userId}
+
+        - id: ewm_event_service_route
+          uri: lb://ewm-event-service
+          predicates:
+            - Path=/events/**,/admin/events/**,/users/{userId}/events,/users/{userId}/events/{eventId}
+
+        - id: ewm_event_service_route_compilation
+          uri: lb://ewm-event-service
+          predicates:
+            - Path=/compilations/**,/admin/compilations/**
+
+        - id: ewm_event_service_route_categories
+          uri: lb://ewm-event-service
+          predicates:
+            - Path=/categories/**,/admin/categories/**
+
+        - id: ewm_request_service_route
+          uri: lb://ewm-request-service
 
           predicates:
-            - Path=/**
+            - Path=/users/{userId}/requests/**, /users/{userId}/events/{eventId}/requests
 
+        - id: ewm_rating_service_route
+          uri: lb://ewm-rating-service
 
-#        - id: ewm_stats_server_route
-#          uri: lb://ewm-stats-server
-#
-#          predicates:
-#            - Path=/ewm-stats-server/**
+          predicates:
+            - Path=/users/{userId}/ratings/**
 
 server:
   port: 8080
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
