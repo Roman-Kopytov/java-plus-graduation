@@ -150,6 +150,11 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.countRequests(eventId, RequestStatus.CONFIRMED);
     }
 
+    @Override
+    public boolean isParticipant(long eventId, long userId) {
+        return requestRepository.existsByRequesterIdAndEventIdAndStatus(userId, eventId, RequestStatus.CONFIRMED);
+    }
+
     private void checkEventRequestLimit(EventRequestDto event) {
         if (requestRepository.isParticipantLimitReached(event.getId(), event.getParticipantLimit())) {
             throw new ConflictException("Request limit reached");

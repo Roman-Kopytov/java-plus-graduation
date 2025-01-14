@@ -9,7 +9,9 @@ import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.dto.request.RequestParamsUpdate;
 import ru.practicum.service.RequestService;
+import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,7 @@ import java.util.List;
 @Validated
 public class PrivateRequestController {
     private final RequestService requestService;
+    private final UserActionController userActionController;
 
     @GetMapping("/requests")
     public List<ParticipationRequestDto> getAll(@PathVariable("userId") long userId) {
@@ -28,7 +31,9 @@ public class PrivateRequestController {
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto create(@PathVariable("userId") long userId,
                                           @RequestParam(value = "eventId") int eventId) {
-        return requestService.create(userId, eventId);
+        ParticipationRequestDto participationRequestDto = requestService.create(userId, eventId);
+        userActionController.sendUserAction(eventId, userId, ActionTypeProto.ACTION_REGISTER, Instant.now());
+        return participationRequestDto;
     }
 
     @PatchMapping("/requests/{requestId}/cancel")

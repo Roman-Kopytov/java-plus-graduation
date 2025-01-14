@@ -23,7 +23,13 @@ public class RequestFeignController implements RequestClient {
 
     @Override
     @GetMapping("/count_confirmed/{eventId}")
-    public Integer countConfirmedRequest(@PathVariable Long eventId) {
+    public Integer countConfirmedRequest(@PathVariable long eventId) {
         return requestService.countConfirmedRequest(eventId);
+    }
+
+    @Override
+    @GetMapping("/participant/{eventId}/{userId}")
+    public Boolean isParticipant(@PathVariable long eventId, @PathVariable long userId) {
+        return requestService.isParticipant(eventId, userId);
     }
 }

@@ -23,4 +23,5 @@ public interface RequestService {
 
     Integer countConfirmedRequest(Long eventId);
 
+    boolean isParticipant(long eventId, long userId);
 }

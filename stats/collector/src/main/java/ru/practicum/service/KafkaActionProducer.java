@@ -15,7 +15,7 @@ import java.time.Instant;
 public class KafkaActionProducer {
     private final Producer<String, SpecificRecordBase> kafkaProducer;
 
-    public <T extends SpecificRecordBase> void send(String topic, Integer key, T event) {
+    public <T extends SpecificRecordBase> void send(String topic, Long key, T event) {
         ProducerRecord<String, SpecificRecordBase> record =
                 new ProducerRecord<>(topic, 1, Instant.now().getEpochSecond(), key.toString(), event);
 

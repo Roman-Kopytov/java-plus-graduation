@@ -1,28 +1,31 @@
 package ru.practicum.controller.event;
 
-import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.StatClient;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.PublicEventRequestParams;
 import ru.practicum.dto.event.Sort;
 import ru.practicum.exeption.WrongDateException;
 import ru.practicum.service.event.EventService;
+import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
+import ru.yandex.practicum.grpc.stats.event.RecommendedEventProto;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/events")
 public class PublicEventsController {
     private final EventService eventService;
-
-    private final StatClient statClient;
+    private final RecommendationController recommendationController;
+    private final UserActionController userActionController;
 
     @GetMapping()
     public List<EventShortDto> getEventsPublic(@RequestParam(value = "text", required = false) String text,
@@ -35,8 +38,7 @@ public class PublicEventsController {
                                                @RequestParam(value = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
                                                @RequestParam(value = "sort", required = false) Sort sort,
                                                @RequestParam(value = "from", defaultValue = "0") int from,
-                                               @RequestParam(value = "size", defaultValue = "10") int size,
-                                               HttpServletRequest request) {
+                                               @RequestParam(value = "size", defaultValue = "10") int size) {
 
 
         Map<String, LocalDateTime> ranges = validDate(rangeStart, rangeEnd);
@@ -52,16 +54,31 @@ public class PublicEventsController {
                 .size(size)
                 .build();
         List<EventShortDto> all = eventService.getAll(params);
-        sendStats(request);
         return all;
     }
 
+    @PutMapping("/{eventId}/like")
+    public void addLikeToEvent(@RequestHeader("X-EWM-USER-ID") long userId, @PathVariable long eventId) {
+        boolean wasVisited = eventService.checkEventVisitedByUser(eventId, userId);
+        if (wasVisited) {
+            userActionController.sendUserAction(eventId, userId, ActionTypeProto.ACTION_LIKE, Instant.now());
+        } else {
+            throw new BadRequestException();
+        }
+    }
+
     @GetMapping("/{eventId}")
-    public EventFullDto getById(@PathVariable("eventId") long eventId, HttpServletRequest request) {
+    public EventFullDto getById(@PathVariable("eventId") long eventId, @RequestHeader("X-EWM-USER-ID") long userId) {
         EventFullDto event = eventService.getById(eventId);
-        sendStats(request);
+        userActionController.sendUserAction(eventId, userId, ActionTypeProto.ACTION_VIEW, Instant.now());
         return event;
     }
+
+    @GetMapping("/recommendations")
+    public Stream<RecommendedEventProto> getRecommendations(@RequestHeader("X-EWM-USER-ID") int userId) {
+        return recommendationController.getRecommendationsForUser(userId, 10);
+    }
+
 
     private Map<String, LocalDateTime> validDate(LocalDateTime rangeStart, LocalDateTime rangeEnd) {
         if (rangeEnd != null && rangeStart != null && rangeEnd.isBefore(rangeStart)) {
@@ -69,11 +86,7 @@ public class PublicEventsController {
         }
         LocalDateTime effectiveRangeStart = rangeStart != null ? rangeStart : LocalDateTime.now();
         LocalDateTime effectiveRangeEnd = rangeEnd != null ? rangeEnd : effectiveRangeStart.plusYears(200);
-
         return Map.of("rangeStart", effectiveRangeStart, "rangeEnd", effectiveRangeEnd);
     }
 
-    private void sendStats(HttpServletRequest request) {
-        statClient.saveStats(request);
-    }
 }

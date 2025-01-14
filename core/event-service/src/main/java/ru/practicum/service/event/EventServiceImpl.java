@@ -107,9 +107,9 @@ public class EventServiceImpl implements EventService {
             if (params.getSort() == EVENT_DATE) {
                 eventShortDtos.sort(Comparator.comparing(EventShortDto::getEventDate).reversed());
             } else if (params.getSort() == VIEWS) {
-                eventShortDtos.sort(Comparator.comparing(EventShortDto::getViews).reversed());
-            } else if (params.getSort() == TOP_RATING) {
                 eventShortDtos.sort(Comparator.comparing(EventShortDto::getRating).reversed());
+            } else if (params.getSort() == TOP_RATING) {
+                eventShortDtos.sort(Comparator.comparing(EventShortDto::getLikeRating).reversed());
             }
         }
 
@@ -399,6 +399,12 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException("Event not found with id" + eventId + "for user" + userId));
         return eventMapper.toEventRequestDto(event);
+    }
+
+    @Override
+    public boolean checkEventVisitedByUser(long eventId, long userId) {
+        return requestClient.isParticipant(eventId, userId)
+                && getEvent(eventId).getEventDate().isBefore(LocalDateTime.now());
     }
 
     private Event getEvent(long eventId) {

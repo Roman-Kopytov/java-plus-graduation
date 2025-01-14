@@ -32,7 +32,7 @@ public class EventShortDto {
 
     private String title;
 
-    private int rating;
+    private int likeRating;
 
-    private long views;
+    private long rating;
 }
