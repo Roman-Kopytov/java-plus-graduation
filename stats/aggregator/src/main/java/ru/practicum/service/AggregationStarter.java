@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.service;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

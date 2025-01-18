@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -84,8 +84,8 @@ public class SimilarityCalcService {
     private double calculateWeight(String actionType) {
         return switch (actionType) {
             case "VIEW" -> 0.4;
-            case "REGISTER" -> 1.0;
-            case "LIKE" -> 0.8;
+            case "REGISTER" -> 0.8;
+            case "LIKE" -> 1.0;
             default -> 0.0;
         };
     }

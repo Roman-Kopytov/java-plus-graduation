@@ -75,12 +75,7 @@ public class CompilationServiceImpl implements CompilationService {
                 .map(ev -> "/events/" + ev.getEventId())
                 .toList();
 
-        StatsParams statsParams = StatsParams.builder()
-                .uris(uris)
-                .unique(true)
-                .start(LocalDateTime.now().minusYears(100))
-                .end(LocalDateTime.now())
-                .build();
+
 
         List<ViewStatsDTO> viewStatsDTOS = statClient.getStats(statsParams);
         Map<Long, UserShortDto> initiatorsByEventId = getInitiators(compEvents);
