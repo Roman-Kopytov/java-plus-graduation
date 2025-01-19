@@ -4,12 +4,12 @@ import com.google.protobuf.Timestamp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.config.KafkaProperties;
+import ru.practicum.kafka.config.KafkaCollectorProperties;
 import ru.practicum.ewm.stats.avro.ActionTypeAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 import ru.practicum.service.KafkaActionProducer;
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
-import ru.yandex.practicum.grpc.stats.action.UserActionProto;
+import ru.practicum.grpc.stats.action.ActionTypeProto;
+import ru.practicum.grpc.stats.action.UserActionProto;
 
 import java.time.Instant;
 
@@ -19,7 +19,7 @@ import java.time.Instant;
 public class UserActionHandlerImpl implements UserActionHandler {
 
     private final KafkaActionProducer producer;
-    private final KafkaProperties kafkaProperties;
+    private final KafkaCollectorProperties kafkaProperties;
 
     @Override
     public void handle(UserActionProto userAction) {

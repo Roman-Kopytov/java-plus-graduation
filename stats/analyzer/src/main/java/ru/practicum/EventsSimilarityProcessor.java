@@ -8,8 +8,8 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.practicum.config.KafkaProperties;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
+import ru.practicum.kafka.config.KafkaProperties;
 import ru.practicum.service.SimilarityService;
 
 import java.time.Duration;
@@ -43,6 +43,7 @@ public class EventsSimilarityProcessor implements Runnable {
                 consumer.commitSync();
             }
         } catch (WakeupException e) {
+            log.info("Consumer wakeup triggered, shutting down gracefully.");
         } catch (Exception e) {
             log.error("Ошибка во время обработки событий от хаба", e);
         } finally {

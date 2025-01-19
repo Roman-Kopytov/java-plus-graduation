@@ -7,11 +7,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.service.SimilarityService;
-import ru.yandex.practicum.grpc.stats.collector.RecommendationsControllerGrpc;
-import ru.yandex.practicum.grpc.stats.event.InteractionsCountRequestProto;
-import ru.yandex.practicum.grpc.stats.event.RecommendedEventProto;
-import ru.yandex.practicum.grpc.stats.event.SimilarEventsRequestProto;
-import ru.yandex.practicum.grpc.stats.event.UserPredictionsRequestProto;
+import ru.practicum.grpc.stats.collector.RecommendationsControllerGrpc;
+import ru.practicum.grpc.stats.event.InteractionsCountRequestProto;
+import ru.practicum.grpc.stats.event.RecommendedEventProto;
+import ru.practicum.grpc.stats.event.SimilarEventsRequestProto;
+import ru.practicum.grpc.stats.event.UserPredictionsRequestProto;
 
 import java.util.List;
 

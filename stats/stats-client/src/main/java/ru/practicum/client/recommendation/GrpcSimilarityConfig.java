@@ -1,4 +1,4 @@
-package ru.practicum.controller;
+package ru.practicum.client.recommendation;
 
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
@@ -7,13 +7,13 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import ru.yandex.practicum.grpc.stats.collector.UserActionControllerGrpc;
+import ru.practicum.grpc.stats.collector.RecommendationsControllerGrpc;
 
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "analyzer.grpc.client.hub-router")
-public class GrpcConfig {
+@ConfigurationProperties(prefix = "grpc.client.analyzer")
+public class GrpcSimilarityConfig {
     private String address;
 
     private boolean enableKeepAlive;
@@ -22,9 +22,8 @@ public class GrpcConfig {
 
     private String negotiationType;
 
-
-    @Bean
-    public UserActionControllerGrpc.UserActionControllerBlockingStub userActionsClient() {
+    @Bean(name = "customRecommendationClient")
+    public RecommendationsControllerGrpc.RecommendationsControllerBlockingStub recommendationClient() {
         ManagedChannelBuilder<?> channelBuilder = ManagedChannelBuilder
                 .forTarget(address)
                 .keepAliveWithoutCalls(keepAliveWithoutCalls);
@@ -32,6 +31,6 @@ public class GrpcConfig {
             channelBuilder.usePlaintext();
         }
         ManagedChannel build = channelBuilder.build();
-        return UserActionControllerGrpc.newBlockingStub(build);
+        return RecommendationsControllerGrpc.newBlockingStub(build);
     }
 }

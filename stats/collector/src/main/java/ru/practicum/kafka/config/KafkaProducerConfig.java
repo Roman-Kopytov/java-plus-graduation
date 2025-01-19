@@ -1,4 +1,4 @@
-package ru.practicum.config;
+package ru.practicum.kafka.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.Properties;
 @Configuration
 @RequiredArgsConstructor
 public class KafkaProducerConfig {
-    private final KafkaProperties kafkaProperties;
+    private final KafkaCollectorProperties kafkaProperties;
 
     @Bean
     public Producer<String, SpecificRecordBase> kafkaProducer() {

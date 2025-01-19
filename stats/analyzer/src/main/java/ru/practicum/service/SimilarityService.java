@@ -1,10 +1,10 @@
 package ru.practicum.service;
 
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
-import ru.yandex.practicum.grpc.stats.event.InteractionsCountRequestProto;
-import ru.yandex.practicum.grpc.stats.event.RecommendedEventProto;
-import ru.yandex.practicum.grpc.stats.event.SimilarEventsRequestProto;
-import ru.yandex.practicum.grpc.stats.event.UserPredictionsRequestProto;
+import ru.practicum.grpc.stats.event.InteractionsCountRequestProto;
+import ru.practicum.grpc.stats.event.RecommendedEventProto;
+import ru.practicum.grpc.stats.event.SimilarEventsRequestProto;
+import ru.practicum.grpc.stats.event.UserPredictionsRequestProto;
 
 import java.util.List;
 

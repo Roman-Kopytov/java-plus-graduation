@@ -4,20 +4,20 @@ DROP TABLE IF EXISTS event_similarity CASCADE;
 CREATE TABLE IF NOT EXISTS user_action
 (
     id         BIGINT GENERATED ALWAYS AS IDENTITY,
-    userId     BIGINT NOT NULL,
-    eventId    BIGINT NOT NULL,
-    actionType VARCHAR,
-    maxWeight  DOUBLE PRECISION,
+    user_id     BIGINT NOT NULL,
+    event_id    BIGINT NOT NULL,
+    action_type VARCHAR,
+    max_weight  DOUBLE PRECISION,
     timestamp  TIMESTAMP,
-    CONSTRAINT uniqueId UNIQUE (userId, eventId)
+    CONSTRAINT uniqueId UNIQUE (user_id, event_id)
 );
 
 CREATE TABLE IF NOT EXISTS event_similarity
 (
     id        BIGINT GENERATED ALWAYS AS IDENTITY,
-    eventA    BIGINT NOT NULL,
-    eventB    BIGINT NOT NULL,
+    event_a    BIGINT NOT NULL,
+    event_b    BIGINT NOT NULL,
     score     DOUBLE PRECISION,
     timestamp TIMESTAMP,
-    CONSTRAINT uniqueAB UNIQUE (eventA, eventB)
+    CONSTRAINT uniqueAB UNIQUE (event_a, event_b)
 );

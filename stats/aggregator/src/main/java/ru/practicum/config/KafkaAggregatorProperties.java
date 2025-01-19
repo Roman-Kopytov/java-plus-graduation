@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 @ConfigurationProperties("spring.kafka")
-public class KafkaProperties {
+public class KafkaAggregatorProperties {
     private String bootstrapServers;
     private ProducerProperties producer;
     private ConsumerProperties consumer;

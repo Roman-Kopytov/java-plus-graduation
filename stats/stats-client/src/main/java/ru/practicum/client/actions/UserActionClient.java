@@ -1,20 +1,20 @@
-package ru.practicum.controller;
+package ru.practicum.client.actions;
 
 import com.google.protobuf.Timestamp;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
-import ru.yandex.practicum.grpc.stats.action.UserActionProto;
-import ru.yandex.practicum.grpc.stats.collector.UserActionControllerGrpc;
+import ru.practicum.grpc.stats.action.ActionTypeProto;
+import ru.practicum.grpc.stats.action.UserActionProto;
+import ru.practicum.grpc.stats.collector.UserActionControllerGrpc;
 
 import java.time.Instant;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class UserActionController {
+public class UserActionClient {
     @GrpcClient("collector")
     private UserActionControllerGrpc.UserActionControllerBlockingStub client;
 

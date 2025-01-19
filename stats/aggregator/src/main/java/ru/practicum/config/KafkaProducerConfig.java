@@ -13,7 +13,7 @@ import java.util.Properties;
 @Configuration
 @RequiredArgsConstructor
 public class KafkaProducerConfig<T extends SpecificRecordBase> {
-    private final KafkaProperties kafkaProperties;
+    private final KafkaAggregatorProperties kafkaProperties;
 
     @Bean
     public Producer<String, T> kafkaProducer() {

@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.client.actions.UserActionClient;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequest;
 import ru.practicum.dto.request.EventRequestStatusUpdateResult;
 import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.dto.request.RequestParamsUpdate;
+import ru.practicum.grpc.stats.action.ActionTypeProto;
 import ru.practicum.service.RequestService;
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
 
 import java.time.Instant;
 import java.util.List;
@@ -20,7 +21,7 @@ import java.util.List;
 @Validated
 public class PrivateRequestController {
     private final RequestService requestService;
-    private final UserActionController userActionController;
+    private final UserActionClient userActionController;
 
     @GetMapping("/requests")
     public List<ParticipationRequestDto> getAll(@PathVariable("userId") long userId) {

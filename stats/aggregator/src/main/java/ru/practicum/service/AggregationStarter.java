@@ -12,7 +12,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.practicum.config.KafkaProperties;
+import ru.practicum.config.KafkaAggregatorProperties;
 import ru.practicum.ewm.stats.avro.EventSimilarityAvro;
 import ru.practicum.ewm.stats.avro.UserActionAvro;
 
@@ -28,7 +28,7 @@ public class AggregationStarter {
 
     private static long PERIOD_OF_MESSAGE_FIX;
     private static long POLL_DURATION;
-    private final KafkaProperties kafkaProperties;
+    private final KafkaAggregatorProperties kafkaProperties;
     private final Consumer<String, UserActionAvro> consumer;
     private final Producer<String, EventSimilarityAvro> producer;
     private final SimilarityCalcService similarityCalcService;

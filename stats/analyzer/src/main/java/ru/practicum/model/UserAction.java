@@ -16,23 +16,19 @@ public class UserAction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "userId", nullable = false)
+    @Column(name = "user_id", nullable = false)
     private long userId;
 
 
-    @Column(name = "eventId", nullable = false)
+    @Column(name = "event_id", nullable = false)
     private long eventId;
 
-    @Column(name = "actionType", nullable = false)
+    @Column(name = "action_type", nullable = false)
     @Enumerated(EnumType.STRING)
     private ActionType actionType;
 
-    @Column(name = "maxWeight", nullable = false)
+    @Column(name = "max_weight", nullable = false)
     private double maxWeight;
-//тут не знаю какой подход применить, либо хранить в бд
-//    либо доставать через Enum или через метод с switch
-//     в идеале, что бы коэфициенты в одном месте были записаны и сервис Aggregator еще мог к ним доступ иметь
-//    если в одном месте поменяется, то и в другом.
 
     @Column(name = "timestamp", nullable = false)
     private Instant timestamp;

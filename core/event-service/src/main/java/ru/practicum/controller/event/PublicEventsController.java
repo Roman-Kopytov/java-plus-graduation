@@ -4,14 +4,16 @@ import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.client.actions.UserActionClient;
+import ru.practicum.client.recommendation.RecommendationClient;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.PublicEventRequestParams;
 import ru.practicum.dto.event.Sort;
 import ru.practicum.exeption.WrongDateException;
+import ru.practicum.grpc.stats.action.ActionTypeProto;
+import ru.practicum.grpc.stats.event.RecommendedEventProto;
 import ru.practicum.service.event.EventService;
-import ru.yandex.practicum.grpc.stats.action.ActionTypeProto;
-import ru.yandex.practicum.grpc.stats.event.RecommendedEventProto;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -24,8 +26,8 @@ import java.util.stream.Stream;
 @RequestMapping("/events")
 public class PublicEventsController {
     private final EventService eventService;
-    private final RecommendationController recommendationController;
-    private final UserActionController userActionController;
+    private final RecommendationClient recommendationController;
+    private final UserActionClient userActionController;
 
     @GetMapping()
     public List<EventShortDto> getEventsPublic(@RequestParam(value = "text", required = false) String text,

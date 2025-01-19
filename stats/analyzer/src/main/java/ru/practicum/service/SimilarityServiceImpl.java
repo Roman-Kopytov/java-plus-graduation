@@ -8,10 +8,10 @@ import ru.practicum.model.RecommendedEventProtoWrap;
 import ru.practicum.model.UserAction;
 import ru.practicum.repository.SimilarityRepository;
 import ru.practicum.repository.UserActionsRepository;
-import ru.yandex.practicum.grpc.stats.event.InteractionsCountRequestProto;
-import ru.yandex.practicum.grpc.stats.event.RecommendedEventProto;
-import ru.yandex.practicum.grpc.stats.event.SimilarEventsRequestProto;
-import ru.yandex.practicum.grpc.stats.event.UserPredictionsRequestProto;
+import ru.practicum.grpc.stats.event.InteractionsCountRequestProto;
+import ru.practicum.grpc.stats.event.RecommendedEventProto;
+import ru.practicum.grpc.stats.event.SimilarEventsRequestProto;
+import ru.practicum.grpc.stats.event.UserPredictionsRequestProto;
 
 import java.util.Comparator;
 import java.util.List;

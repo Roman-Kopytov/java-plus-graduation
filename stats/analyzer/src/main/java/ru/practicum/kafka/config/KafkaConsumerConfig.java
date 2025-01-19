@@ -1,4 +1,4 @@
-package ru.practicum.config;
+package ru.practicum.kafka.config;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,19 +28,19 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaProperties
                 .getActions().getKeyDeserializer());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties
-                .getActions().getValueSerializer());
+                .getActions().getValueDeserializer());
         return new KafkaConsumer<>(props);
     }
 
     @Bean
-    public Consumer<String, EventSimilarityAvro> eventsSimilarityEConsumer() {
+    public Consumer<String, EventSimilarityAvro> eventsSimilarityConsumer() {
         Properties props = new Properties();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaProperties
                 .getBootstrapServers());
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, kafkaProperties
                 .getEvents().getKeyDeserializer());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, kafkaProperties
-                .getEvents().getValueSerializer());
+                .getEvents().getValueDeserializer());
         return new KafkaConsumer<>(props);
     }
 }

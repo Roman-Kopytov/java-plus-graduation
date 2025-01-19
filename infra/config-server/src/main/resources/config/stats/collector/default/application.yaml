@@ -4,8 +4,11 @@ collector:
       userActions: "stats.user-actions.v1"
 spring:
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: kafka:29092
     producer:
       bootstrap-servers: ${collector.kafka.bootstrap-servers}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: ru.yandex.practicum.AvroSerializer
+      value-serializer: ru.practicum.AvroSerializer
+grpc:
+  server:
+    port: 0

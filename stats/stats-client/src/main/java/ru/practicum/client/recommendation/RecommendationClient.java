@@ -1,14 +1,14 @@
-package ru.practicum.controller.event;
+package ru.practicum.client.recommendation;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.client.inject.GrpcClient;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.grpc.stats.collector.RecommendationsControllerGrpc;
-import ru.yandex.practicum.grpc.stats.event.InteractionsCountRequestProto;
-import ru.yandex.practicum.grpc.stats.event.RecommendedEventProto;
-import ru.yandex.practicum.grpc.stats.event.SimilarEventsRequestProto;
-import ru.yandex.practicum.grpc.stats.event.UserPredictionsRequestProto;
+import ru.practicum.grpc.stats.collector.RecommendationsControllerGrpc;
+import ru.practicum.grpc.stats.event.InteractionsCountRequestProto;
+import ru.practicum.grpc.stats.event.RecommendedEventProto;
+import ru.practicum.grpc.stats.event.SimilarEventsRequestProto;
+import ru.practicum.grpc.stats.event.UserPredictionsRequestProto;
 
 import java.util.Iterator;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.stream.StreamSupport;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RecommendationController {
+public class RecommendationClient {
     @GrpcClient("analyzer")
     private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub client;
 
@@ -30,7 +30,6 @@ public class RecommendationController {
                 .setUserId(userId)
                 .setMaxResults(maxResults)
                 .build();
-
 
         Iterator<RecommendedEventProto> iterator = client.getSimilarEvents(request);
 

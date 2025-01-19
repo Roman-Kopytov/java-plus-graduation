@@ -1,4 +1,4 @@
-package ru.practicum.config;
+package ru.practicum.kafka.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Setter
 @Component
 @ConfigurationProperties("spring.kafka")
-public class KafkaProperties {
+public class KafkaCollectorProperties {
     private String bootstrapServers;
     private Producer producer;
     @Value("${collector.kafka.topics.userActions}")

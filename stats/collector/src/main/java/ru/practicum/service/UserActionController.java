@@ -7,8 +7,8 @@ import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.service.GrpcService;
 import ru.practicum.controller.UserActionHandlerImpl;
-import ru.yandex.practicum.grpc.stats.action.UserActionProto;
-import ru.yandex.practicum.grpc.stats.collector.UserActionControllerGrpc;
+import ru.practicum.grpc.stats.action.UserActionProto;
+import ru.practicum.grpc.stats.collector.UserActionControllerGrpc;
 
 @GrpcService
 @RequiredArgsConstructor

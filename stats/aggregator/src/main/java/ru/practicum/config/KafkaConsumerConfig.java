@@ -9,7 +9,6 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
@@ -18,7 +17,7 @@ import java.util.Properties;
 @Configuration
 @RequiredArgsConstructor
 public class KafkaConsumerConfig<T extends SpecificRecordBase> {
-    private final KafkaProperties kafkaProperties;
+    private final KafkaAggregatorProperties kafkaProperties;
 
     @Bean
     public Consumer<String, T> kafkaConsumer() {

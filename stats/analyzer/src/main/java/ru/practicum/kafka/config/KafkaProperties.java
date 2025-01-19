@@ -1,4 +1,4 @@
-package ru.practicum.config;
+package ru.practicum.kafka.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @Component
-@ConfigurationProperties("spring.kafka")
+@ConfigurationProperties("spring.kafka.consumer")
 public class KafkaProperties {
     private String bootstrapServers;
     private long pollDuration;
@@ -22,7 +22,7 @@ public class KafkaProperties {
         private String bootstrapServers;
         private String groupId;
         private String keyDeserializer;
-        private String valueSerializer;
+        private String valueDeserializer;
         private String topic;
     }
 

@@ -1,0 +1,56 @@
+spring:
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/ewm_stats_db
+    username: root
+    password: root
+
+  kafka:
+    consumer:
+      bootstrap-servers: kafka:29092
+      group-id: stats.aggregator
+      auto-offset-reset: earliest
+      poll-duration: 100
+      message-fix-time: 50
+
+      actions:
+        bootstrap-servers: ${spring.kafka.consumer.bootstrap-servers}
+        group-id: "${kafka.consumer.group-id}.actions"
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: ru.practicum.kafka.deserializer.UserActionDeserializer
+        topic: "stats.user-actions.v1"
+
+      events:
+        bootstrap-servers: ${spring.kafka.consumer.bootstrap-servers}
+        group-id: "${kafka.consumer.group-id}.events"
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: ru.practicum.kafka.deserializer.EventSimilarityDeserializer
+        topic: "stats.events-similarity.v1"
+
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  sql:
+    init:
+      mode: always
+
+logging:
+  level:
+    org:
+      springframework:
+        orm:
+          jpa: INFO
+          JpaTransactionManager: INFO
+        transaction:
+          interceptor: INFO
+
+grpc:
+  server:
+    port: 0
