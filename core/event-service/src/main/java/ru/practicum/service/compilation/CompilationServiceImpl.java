@@ -173,6 +173,6 @@ public class CompilationServiceImpl implements CompilationService {
                 .filter(ev -> ev.getEventId() == (event.getEventId()))
                 .map(RecommendedEventProto::getScore)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Event not found: " + event.getEventId()));
+                .orElse(0.0);
     }
 }

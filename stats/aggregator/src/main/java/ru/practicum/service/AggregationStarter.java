@@ -92,34 +92,47 @@ public class AggregationStarter {
 
     private void handleRecord(ConsumerRecord<String, UserActionAvro> record) throws InterruptedException {
         UserActionAvro action = record.value();
-        similarityCalcService.updateUserAction(action);
+        log.info("Обработка записи с EventId: {}", action.getEventId());
+        try {
+            similarityCalcService.updateUserAction(action);
+            long eventId = action.getEventId();
 
+            log.info("Начинаем вычисление схожести для события EventId: {}", eventId);
 
-        long eventId = action.getEventId();
-        for (long otherEventId : similarityCalcService.getEventIds()) {
-            if (eventId != otherEventId) {
-                double similarity = similarityCalcService.calculateSimilarity(eventId, otherEventId);
-                long eventA = Math.min(eventId, otherEventId);
-                long eventB = Math.max(eventA, otherEventId);
-                EventSimilarityAvro eventSimilarityAvro = EventSimilarityAvro.newBuilder()
-                        .setEventA(eventA)
-                        .setEventB(eventB)
-                        .setScore(similarity)
-                        .setTimestamp(action.getTimestamp())
-                        .build();
-                send(kafkaProperties.getConsumer().getTopic(), null, eventSimilarityAvro);
+            for (long otherEventId : similarityCalcService.getEventIds()) {
+                if (eventId != otherEventId) {
+                    double similarity = similarityCalcService.calculateSimilarity(eventId, otherEventId);
+
+                    long eventA = Math.min(eventId, otherEventId);
+                    long eventB = Math.max(eventA, otherEventId);
+
+                    EventSimilarityAvro eventSimilarityAvro = EventSimilarityAvro.newBuilder()
+                            .setEventA(eventA)
+                            .setEventB(eventB)
+                            .setScore(similarity)
+                            .setTimestamp(action.getTimestamp())
+                            .build();
+
+                    log.info("Отправка схожести для событий {} и {} с коэффициентом: {}", eventA, eventB, similarity);
+                    send(kafkaProperties.getConsumer().getTopic(), eventSimilarityAvro);
+                }
             }
+        } catch (Exception e) {
+            // Логируем ошибку, если она произошла
+            log.error("Ошибка при обработке записи с EventId: {}", action.getEventId(), e);
+            throw new InterruptedException("Ошибка при обработке записи: " + e.getMessage());
         }
+        log.info("Обработка записи с EventId: {} завершена", action.getEventId());
     }
 
 
-    private void send(String topic, String key, EventSimilarityAvro snapshot) {
+    private void send(String topic, EventSimilarityAvro snapshot) {
         ProducerRecord<String, EventSimilarityAvro> record =
-                new ProducerRecord<>(topic, null, snapshot.getTimestamp().getEpochSecond(), key, snapshot);
+                new ProducerRecord<>(topic, null, snapshot.getTimestamp().getEpochSecond(), null, snapshot);
 
         producer.send(record, (metadata, exception) -> {
             if (exception != null) {
-                log.error("Ошибка при отправке сообщения в Kafka, topic: {}, key: {}", topic, key, exception);
+                log.error("Ошибка при отправке сообщения в Kafka, topic: {}", topic, exception);
             } else {
                 log.info("Сообщение успешно отправлено в Kafka, topic: {}, partition: {}, offset: {}",
                         metadata.topic(), metadata.partition(), metadata.offset());

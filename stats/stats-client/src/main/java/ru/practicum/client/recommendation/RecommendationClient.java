@@ -25,34 +25,48 @@ public class RecommendationClient {
     private RecommendationsControllerGrpc.RecommendationsControllerBlockingStub client;
 
     public Stream<RecommendedEventProto> getSimilarEvents(int eventId, int userId, int maxResults) {
-        SimilarEventsRequestProto request = SimilarEventsRequestProto.newBuilder()
-                .setEventId(eventId)
-                .setUserId(userId)
-                .setMaxResults(maxResults)
-                .build();
+        try {
+            SimilarEventsRequestProto request = SimilarEventsRequestProto.newBuilder()
+                    .setEventId(eventId)
+                    .setUserId(userId)
+                    .setMaxResults(maxResults)
+                    .build();
+            Iterator<RecommendedEventProto> iterator = client.getSimilarEvents(request);
 
-        Iterator<RecommendedEventProto> iterator = client.getSimilarEvents(request);
-
-        return asStream(iterator);
+            return asStream(iterator);
+        } catch (Exception e) {
+            log.error("Error while fetching similar events: eventId={}, userId={}, maxResults={}", eventId, userId, maxResults, e);
+            return Stream.empty();
+        }
     }
 
     public Stream<RecommendedEventProto> getRecommendationsForUser(int userId, int maxResults) {
-        UserPredictionsRequestProto request = UserPredictionsRequestProto.newBuilder()
-                .setUserId(userId)
-                .setMaxResults(maxResults)
-                .build();
-        Iterator<RecommendedEventProto> iterator = client.getRecommendationsForUser(request);
+        try {
+            UserPredictionsRequestProto request = UserPredictionsRequestProto.newBuilder()
+                    .setUserId(userId)
+                    .setMaxResults(maxResults)
+                    .build();
+            Iterator<RecommendedEventProto> iterator = client.getRecommendationsForUser(request);
 
-        return asStream(iterator);
+            return asStream(iterator);
+        } catch (Exception e) {
+            log.error("Error while fetching recommendations for user: userId={}, maxResults={}", userId, maxResults, e);
+            return Stream.empty();
+        }
     }
 
     public Stream<RecommendedEventProto> getInteractionsCount(List<Long> eventId) {
-        InteractionsCountRequestProto request = InteractionsCountRequestProto.newBuilder()
-                .addAllEventId(eventId)
-                .build();
-        Iterator<RecommendedEventProto> iterator = client.getInteractionsCount(request);
+        try {
+            InteractionsCountRequestProto request = InteractionsCountRequestProto.newBuilder()
+                    .addAllEventId(eventId)
+                    .build();
+            Iterator<RecommendedEventProto> iterator = client.getInteractionsCount(request);
 
-        return asStream(iterator);
+            return asStream(iterator);
+        } catch (Exception e) {
+            log.error("Error while fetching interactions count", e);
+            return Stream.empty();
+        }
     }
 
     private Stream<RecommendedEventProto> asStream(Iterator<RecommendedEventProto> iterator) {

@@ -1,7 +1,7 @@
 collector:
   kafka:
     topics:
-      userActions: "stats.user-actions.v1"
+      userActions: stats.user-actions.v1
 spring:
   kafka:
     bootstrap-servers: kafka:29092

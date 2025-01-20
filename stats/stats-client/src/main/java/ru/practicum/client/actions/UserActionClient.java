@@ -19,13 +19,20 @@ public class UserActionClient {
     private UserActionControllerGrpc.UserActionControllerBlockingStub client;
 
     public void sendUserAction(long eventId, long userId, ActionTypeProto actionType, Instant instant) {
-        Timestamp timestamp = Timestamp.newBuilder().setNanos(instant.getNano()).build();
-        UserActionProto request = UserActionProto.newBuilder()
-                .setEventId(eventId)
-                .setUserId(userId)
-                .setActionType(actionType)
-                .setTimestamp(timestamp)
-                .build();
-        client.collectUserAction(request);
+        try {
+            log.info("Отправка действия пользователя: userId={}, eventId={}, actionType={}", userId, eventId, actionType);
+            Timestamp timestamp = Timestamp.newBuilder().setNanos(instant.getNano()).build();
+            UserActionProto request = UserActionProto.newBuilder()
+                    .setEventId(eventId)
+                    .setUserId(userId)
+                    .setActionType(actionType)
+                    .setTimestamp(timestamp)
+                    .build();
+            client.collectUserAction(request);
+        } catch (Exception e) {
+            log.error("Ошибка при отправке действия пользователя: userId={}, eventId={}, actionType={}",
+                    userId, eventId, actionType, e);
+        }
+
     }
 }
