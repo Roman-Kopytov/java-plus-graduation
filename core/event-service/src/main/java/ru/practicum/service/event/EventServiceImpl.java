@@ -418,7 +418,7 @@ public class EventServiceImpl implements EventService {
                 .filter(ev -> ev.getEventId() == (event.getEventId()))
                 .map(RecommendedEventProto::getScore)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Event not found: " + event.getEventId()));
+                .orElse(0.0);
     }
 
 
@@ -434,7 +434,10 @@ public class EventServiceImpl implements EventService {
 
     private double getEventRating(Event event) {
         Stream<RecommendedEventProto> interactionsCount = recommendationClient.getInteractionsCount(List.of(event.getId()));
-        RecommendedEventProto recommendedEventProto = interactionsCount.findFirst().orElse(RecommendedEventProto.newBuilder().setEventId(event.getId()).setScore(0).build());
+        RecommendedEventProto recommendedEventProto = interactionsCount.findFirst().orElse(RecommendedEventProto.newBuilder()
+                .setEventId(event.getId())
+                .setScore(0)
+                .build());
 
         return recommendedEventProto.getScore();
     }

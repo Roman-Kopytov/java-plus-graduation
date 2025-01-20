@@ -12,3 +12,9 @@ spring:
 grpc:
   server:
     port: 0
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
