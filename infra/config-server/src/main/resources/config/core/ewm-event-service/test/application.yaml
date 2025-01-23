@@ -18,6 +18,19 @@ spring:
       hibernate:
         format_sql: true
 
+grpc:
+  client:
+    collector:
+      address: 'discovery:///collector'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+    analyzer:
+      address: 'discovery:///analyzer'
+      enableKeepAlive: true
+      keepAliveWithoutCalls: true
+      negotiationType: plaintext
+
 logging:
   level:
     org.springframework:
@@ -26,6 +39,3 @@ logging:
       orm.JpaTransactionManager: INFO
       jdbc.datasource.init: DEBUG
       transaction.interceptor: INFO
-
-client:
-  url: http://stats-server:9090

@@ -31,7 +31,3 @@ logging:
       orm.JpaTransactionManager: INFO
       jdbc.datasource.init: DEBUG
       transaction.interceptor: INFO
-
-
-client:
-  url: http://stats-server:9090

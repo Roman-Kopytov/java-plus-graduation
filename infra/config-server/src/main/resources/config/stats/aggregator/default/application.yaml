@@ -1,0 +1,16 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: ru.practicum.AvroSerializer
+      topic: "stats.events-similarity.v1"
+
+    consumer:
+      group-id: stats.aggregator.actions
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: ru.practicum.kafka.deserializer.UserActionDeserializer
+      topic: "stats.user-actions.v1"
+      poll-duration: 100
+      message-fix-time: 200

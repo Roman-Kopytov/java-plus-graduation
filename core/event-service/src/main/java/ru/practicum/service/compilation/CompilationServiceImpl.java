@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.client.StatClient;
+import ru.practicum.client.recommendation.RecommendationClient;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.dto.compilation.NewCompilationDto;
 import ru.practicum.dto.compilation.PublicCompilationParams;
@@ -14,9 +14,9 @@ import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.request.EventCountByRequest;
 import ru.practicum.dto.user.UserShortDto;
 import ru.practicum.exeption.NotFoundException;
-import ru.practicum.feignclient.RatingClient;
 import ru.practicum.feignclient.RequestClient;
 import ru.practicum.feignclient.UserClient;
+import ru.practicum.grpc.stats.event.RecommendedEventProto;
 import ru.practicum.mapper.CompilationMapper;
 import ru.practicum.mapper.EventMapper;
 import ru.practicum.model.Compilation;
@@ -24,15 +24,13 @@ import ru.practicum.model.Event;
 import ru.practicum.model.QCompilation;
 import ru.practicum.repository.CompilationRepository;
 import ru.practicum.repository.EventRepository;
-import ru.practicum.stat.StatsParams;
-import ru.practicum.stat.ViewStatsDTO;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -41,11 +39,10 @@ import java.util.stream.StreamSupport;
 public class CompilationServiceImpl implements CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
-    private final StatClient statClient;
     private final EventMapper eventMapper;
     private final RequestClient requestClient;
     private final UserClient userClient;
-    private final RatingClient ratingClient;
+    private final RecommendationClient recommendationClient;
 
 
     private final CompilationMapper compilationMapper;
@@ -71,35 +68,17 @@ public class CompilationServiceImpl implements CompilationService {
 
         List<EventCountByRequest> eventsIdWithViews = requestClient.getEventIdAndCountRequest(eventIds);
 
-        List<String> uris = eventsIdWithViews.stream()
-                .map(ev -> "/events/" + ev.getEventId())
-                .toList();
-
-        StatsParams statsParams = StatsParams.builder()
-                .uris(uris)
-                .unique(true)
-                .start(LocalDateTime.now().minusYears(100))
-                .end(LocalDateTime.now())
-                .build();
-
-        List<ViewStatsDTO> viewStatsDTOS = statClient.getStats(statsParams);
+        List<RecommendedEventProto> eventsRating = getEventsRating(eventsIdWithViews);
         Map<Long, UserShortDto> initiatorsByEventId = getInitiators(compEvents);
         return eventsIdWithViews.stream().map(ev -> {
             Event finalEvent = compEvents.stream()
                     .filter(e -> e.getId().equals(ev.getEventId()))
                     .findFirst().orElseThrow(() -> new IllegalStateException("Event not found: " + ev.getEventId()));
 
-            int rating = getRating(finalEvent);
-
-            long views = viewStatsDTOS.stream()
-                    .filter(stat -> stat.getUri().equals("/events/" + ev.getEventId()))
-                    .map(ViewStatsDTO::getHits)
-                    .findFirst()
-                    .orElse(0L);
-
+            double rating = getRating(ev, eventsRating);
             finalEvent.setConfirmedRequests((Integer) ev.getCount());
             UserShortDto userShortDto = initiatorsByEventId.get(ev.getEventId());
-            return eventMapper.toEventShortDto(finalEvent, userShortDto, rating, views);
+            return eventMapper.toEventShortDto(finalEvent, userShortDto, rating);
         }).toList();
     }
 
@@ -174,8 +153,26 @@ public class CompilationServiceImpl implements CompilationService {
         return compilationMapper.toCompilationDto(compilation, getEventShortDtos(compilation));
     }
 
-    private int getRating(Event event) {
-        return ratingClient.countEventRating(event.getId());
+    private double getEventRating(Event event) {
+        Stream<RecommendedEventProto> interactionsCount = recommendationClient.getInteractionsCount(List.of(event.getId()));
+        RecommendedEventProto recommendedEventProto = interactionsCount.findFirst().orElse(RecommendedEventProto.newBuilder().setEventId(event.getId()).setScore(0).build());
 
+        return recommendedEventProto.getScore();
+    }
+
+    private List<RecommendedEventProto> getEventsRating(List<EventCountByRequest> eventsIdWithConfirmedRequest) {
+        List<Long> collect = eventsIdWithConfirmedRequest.stream()
+                .map(EventCountByRequest::getEventId)
+                .collect(Collectors.toList());
+        Stream<RecommendedEventProto> interactionsCount = recommendationClient.getInteractionsCount(collect);
+        return interactionsCount.toList();
+    }
+
+    private double getRating(EventCountByRequest event, List<RecommendedEventProto> recommendedEventProtos) {
+        return recommendedEventProtos.stream()
+                .filter(ev -> ev.getEventId() == (event.getEventId()))
+                .map(RecommendedEventProto::getScore)
+                .findFirst()
+                .orElse(0.0);
     }
 }

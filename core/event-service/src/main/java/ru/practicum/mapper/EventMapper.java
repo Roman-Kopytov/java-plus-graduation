@@ -19,9 +19,8 @@ import java.time.LocalDateTime;
 public interface EventMapper {
     @Mapping(target = "id", source = "event.id")
     @Mapping(target = "rating", source = "rating")
-    @Mapping(target = "views", source = "views")
     @Mapping(target = "initiator", source = "userShortDto")
-    EventFullDto toEventFullDto(final Event event, final UserShortDto userShortDto, final long rating, final long views);
+    EventFullDto toEventFullDto(final Event event, final UserShortDto userShortDto, final double rating);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "publishedOn", ignore = true)
@@ -35,9 +34,8 @@ public interface EventMapper {
 
     @Mapping(target = "id", source = "event.id")
     @Mapping(target = "rating", source = "rating")
-    @Mapping(target = "views", source = "views")
     @Mapping(target = "initiator", source = "userShortDto")
-    EventShortDto toEventShortDto(final Event event, final UserShortDto userShortDto, final long rating, final long views);
+    EventShortDto toEventShortDto(final Event event, final UserShortDto userShortDto, final double rating);
 
     EventRequestDto toEventRequestDto(final Event event);
 }

@@ -31,5 +31,7 @@ public interface EventService {
 
     EventRequestDto getByIdAndInitiatorId(long eventId, long userId);
 
+    boolean checkEventVisitedByUser(long eventId, long userId);
+
 
 }

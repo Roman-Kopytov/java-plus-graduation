@@ -14,6 +14,8 @@ public interface RequestClient {
     List<EventCountByRequest> getEventIdAndCountRequest(@RequestParam("eventIds") List<Long> eventIds);
 
     @GetMapping("/feign/request/count_confirmed/{eventId}")
-    Integer countConfirmedRequest(@PathVariable Long eventId);
+    Integer countConfirmedRequest(@PathVariable long eventId);
 
+    @GetMapping("/feign/request/participant/{eventId}/{userId}")
+    Boolean isParticipant(@PathVariable long eventId, @PathVariable long userId);
 }

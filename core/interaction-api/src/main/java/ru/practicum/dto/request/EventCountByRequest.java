@@ -10,10 +10,4 @@ import lombok.Setter;
 public class EventCountByRequest {
     Long eventId;
     Number count;
-
-//    public EventCountByRequest(Long eventId, Long count) {
-//        this.eventId = eventId;
-//        this.count = count;
-//    }
-
 }
